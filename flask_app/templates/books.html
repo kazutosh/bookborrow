@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>書籍管理アプリ</title>
+    <style>
+
+#form_create {
+    display: flex;
+    flex-flow: column;
+    max-width: 400px;
+    border: 4px #3f4470 solid;
+}
+
+    </style>
+</head>
+
+
+<body>
+    <h1>これは書籍管理アプリです</h1>
+    <table>
+        <caption>書籍</caption>
+        <thead>
+            <tr>
+                <th>書籍名</th>
+                <th>著者</th>
+                <th>ISBN</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+                <tr>
+                    <td>
+                        <a href="books/{{ book.id }}">{{ book.name }}</a>
+                    </td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.isbn }}</td>
+                    <td>
+                        <form target="_self" action="delete" method="post">
+                            <input name="book_id" type="hidden" value="{{ book.id }}" />
+                            <input value="削除" type="submit" />
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form id="form_create" target="_self" action="create" method="post">
+        <div>
+            <span>書籍名：</span>
+            <input name="book_name" type="text" />
+        </div>
+        <div>
+            <span>著者：</span>
+            <input name="book_author" type="text" />
+        </div>
+        <div>
+            <span>ISBN：</span>
+            <input name="book_isbn" type="text" />
+        </div>
+        <input type="submit" />
+    </form>
+</body>
+
+</html>

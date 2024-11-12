@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>書籍管理アプリ</title>
+</head>
+
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npsm/quagga@0.12.1/dist/quagga.min.js"></script>
+
+    <!-- {% if current_user.is_authenticated %}
+        <a>ログインしていません</a>
+    {% else %}
+        <a>ログインしています</a>
+    {% endif %} -->
+    <h1>これは書籍管理アプリです</h1>
+    <div id="cameraDisplay"></div>
+
+    <script>
+        const onProcessed = (callback) => {
+            if(callback) {
+                console.log(callback)
+            }
+        }
+
+        Quagga.init({
+            inputStream : {
+              name : "Live",
+              type : "LiveStream",
+              target: document.querySelector('#cameraDisplay')    // Or '#yourElement' (optional)
+            },
+            decoder : {
+              readers : ["code_128_reader"]
+            }
+          }, function(err) {
+              if (err) {
+                  console.log(err);
+                  return
+              }
+              console.log("Initialization finished. Ready to start");
+              Quagga.onProcessed(onProcessed)
+              Quagga.start();
+          });
+    </script>
+</body>

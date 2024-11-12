@@ -1,6 +1,13 @@
-from flask_app import db
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from sqlalchemy.orm import Mapped, mapped_column
+
+from .db import db
+
+class Book(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column()
+    author: Mapped[str] = mapped_column()
+    isbn: Mapped[str] = mapped_column(nullable=True)
+
 
 # DBのテーブルを定義する
 # class Account(UserMixin, db.Model):
@@ -20,3 +27,8 @@ from flask_login import UserMixin
 #     # 入力されたパスワードが登録されているパスワードハッシュと一致するかを確認
 #     def check_password(self, password):
 #             return check_password_hash(self.password, password)
+
+# class User(db.Model):
+#     id: Mapped[int] = mapped_column(primary_key=True)
+#     username: Mapped[str] = mapped_column(unique=True)
+#     email: Mapped[str]
