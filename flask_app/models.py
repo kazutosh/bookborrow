@@ -9,8 +9,8 @@ class Book(db.Model):
     title: Mapped[str] = mapped_column()
     authors: Mapped[str] = mapped_column(nullable=True)
     isbn: Mapped[str] = mapped_column(nullable=True)
-    public_date: Mapped[date] = mapped_column(nullable=True)
-    public_company: Mapped[str] = mapped_column(nullable=True)
+    publisher: Mapped[str] = mapped_column(nullable=True)
+    published_date: Mapped[date] = mapped_column(nullable=True)
 
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -26,10 +26,10 @@ class User(db.Model):
 
 class Borrow(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    user: Mapped[int] = mapped_column()
-    book: Mapped[int] = mapped_column()
-    borrow_at: Mapped[date] = mapped_column()
-    return_at: Mapped[date] = mapped_column(nullable=True)
+    user_id: Mapped[int] = mapped_column()
+    book_id: Mapped[int] = mapped_column()
+    borrowed_at: Mapped[date] = mapped_column()
+    returned_at: Mapped[date] = mapped_column(nullable=True)
     return_expected_at: Mapped[date] = mapped_column()
 
 # DBのテーブルを定義する
