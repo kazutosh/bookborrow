@@ -1,13 +1,36 @@
+from datetime import date
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .db import db
 
 class Book(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column()
-    author: Mapped[str] = mapped_column()
+    title: Mapped[str] = mapped_column()
+    authors: Mapped[str] = mapped_column(nullable=True)
     isbn: Mapped[str] = mapped_column(nullable=True)
+    public_date: Mapped[date] = mapped_column(nullable=True)
+    public_company: Mapped[str] = mapped_column(nullable=True)
 
+class User(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column()
+    email: Mapped[str] = mapped_column()
+    password_hash: Mapped[str] = mapped_column()
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+class Borrow(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user: Mapped[int] = mapped_column()
+    book: Mapped[int] = mapped_column()
+    borrow_at: Mapped[date] = mapped_column()
+    return_at: Mapped[date] = mapped_column(nullable=True)
+    return_expected_at: Mapped[date] = mapped_column()
 
 # DBのテーブルを定義する
 # class Account(UserMixin, db.Model):
