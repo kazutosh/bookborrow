@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
+from sqlalchemy import MetaData
 from flask_login import LoginManager
 
 from flask_app import models
@@ -19,12 +20,12 @@ def create_app():
         db.create_all()
     migrate = Migrate(app, db)
 
-    # login_manager = LoginManager()
-    # login_manager.init_app(app)
+    login_manager = LoginManager()
+    login_manager.init_app(app)
 
-    # @login_manager.user_loader
-    # def load_user(user_id):
-    #     return models.Account.query.filter_by(id=user_id).one_or_none()
+    @login_manager.user_loader
+    def load_user(user_id):
+        return models.User.query.filter_by(id=user_id).one_or_none()
 
     # Blueprintの登録
     from flask_app.views.index import index_module
@@ -41,6 +42,9 @@ def create_app():
 
     from .views import barcode
     app.register_blueprint(barcode.module)
+
+    from .views import login
+    app.register_blueprint(login.module)
 
     return app
 

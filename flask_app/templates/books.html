@@ -3,64 +3,66 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>書籍管理アプリ</title>
-    <style>
-
-#form_create {
-    display: flex;
-    flex-flow: column;
-    max-width: 400px;
-    border: 4px #3f4470 solid;
-}
-
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-
 <body>
-    <h1>これは書籍管理アプリです</h1>
-    <table>
-        <caption>書籍</caption>
-        <thead>
-            <tr>
-                <th>書籍名</th>
-                <th>著者</th>
-                <th>ISBN</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for book in books %}
+    {% include "header.html" %}
+
+    <div class="container py-5">
+        <!-- 書籍一覧テーブル -->
+        <h2 class="mb-4">書籍一覧</h3>
+        <table class="table table-striped table-bordered mb-5">
+            <thead>
+                <tr>
+                    <th scope="col">書籍名</th>
+                    <th scope="col">著者</th>
+                    <th scope="col">ISBN</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
                 <tr>
                     <td>
-                        <a href="books/{{ book.id }}">{{ book.name }}</a>
+                        <a href="books/{{ book.id }}" class="text-decoration-none">{{ book.title }}</a>
                     </td>
-                    <td>{{ book.author }}</td>
+                    <td>{{ book.authors }}</td>
                     <td>{{ book.isbn }}</td>
-                    <td>
-                        <form target="_self" action="delete" method="post">
-                            <input name="book_id" type="hidden" value="{{ book.id }}" />
-                            <input value="削除" type="submit" />
-                        </form>
-                    </td>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <form id="form_create" target="_self" action="create" method="post">
-        <div>
-            <span>書籍名：</span>
-            <input name="book_name" type="text" />
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 書籍追加フォーム -->
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h3>新しい書籍を追加</h3>
+            </div>
+            <div class="card-body">
+                <form id="form_create" action="create" method="post">
+                    <div class="mb-3">
+                        <label for="book_name" class="form-label">書籍名</label>
+                        <input type="text" class="form-control" id="book_name" name="book_name" placeholder="書籍名を入力してください" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="book_author" class="form-label">著者</label>
+                        <input type="text" class="form-control" id="book_author" name="book_author" placeholder="著者名を入力してください" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="book_isbn" class="form-label">ISBN</label>
+                        <input type="text" class="form-control" id="book_isbn" name="book_isbn" placeholder="ISBNを入力してください" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">追加</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div>
-            <span>著者：</span>
-            <input name="book_author" type="text" />
-        </div>
-        <div>
-            <span>ISBN：</span>
-            <input name="book_isbn" type="text" />
-        </div>
-        <input type="submit" />
-    </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

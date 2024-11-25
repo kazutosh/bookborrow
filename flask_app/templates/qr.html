@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRコード生成</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>貸出用QRコード</h1>
+    <canvas class="qrcode" data-size="10"></canvas>
+    <canvas class="qrcode" data-size="15"></canvas>
+    <canvas class="qrcode" data-size="20"></canvas>
+    <canvas class="qrcode" data-size="25"></canvas>
+    <canvas class="qrcode" data-size="30"></canvas>
+    <canvas class="qrcode" data-size="40"></canvas>
+    <canvas class="qrcode" data-size="50"></canvas>
+
+    <script>
+        function generateQRCode(outputCanvas, data, resolution) {
+            if (data.trim()) {
+                QRCode.toCanvas(outputCanvas, data, { width: resolution }, function (error) {
+                    if (error) console.error(error);
+                });
+            }
+        }
+
+        const path = "{{ url_path }}"
+        const url = "http://" + document.location.host + path
+        const qrcode_outputs = document.getElementsByClassName("qrcode")
+        for(var i = 0; i < qrcode_outputs.length; i++) {
+            canvas = qrcode_outputs[i]
+            size = canvas.dataset.size
+            generateQRCode(canvas, url, 10 * size)
+            canvas.style["width"] = size + "mm"
+            canvas.style["height"] = size + "mm"
+        }
+    </script>
+</body>
+</html>

@@ -1,6 +1,10 @@
+from typing import List
 from datetime import date
+
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from flask_login import UserMixin
 
 from .db import db
 
@@ -12,11 +16,15 @@ class Book(db.Model):
     publisher: Mapped[str] = mapped_column(nullable=True)
     published_date: Mapped[date] = mapped_column(nullable=True)
 
-class User(db.Model):
+    borrows: Mapped[List["Borrow"]] = relationship(back_populates="book")
+
+class User(db.Model, UserMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
     email: Mapped[str] = mapped_column()
     password_hash: Mapped[str] = mapped_column()
+
+    borrows: Mapped[List["Borrow"]] = relationship(back_populates="user")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -26,11 +34,14 @@ class User(db.Model):
 
 class Borrow(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column()
-    book_id: Mapped[int] = mapped_column()
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    book_id: Mapped[int] = mapped_column(ForeignKey("book.id"))
     borrowed_at: Mapped[date] = mapped_column()
     returned_at: Mapped[date] = mapped_column(nullable=True)
     return_expected_at: Mapped[date] = mapped_column()
+
+    user: Mapped[User] = relationship(back_populates="borrows")
+    book: Mapped[Book] = relationship(back_populates="borrows")
 
 # DBのテーブルを定義する
 # class Account(UserMixin, db.Model):
