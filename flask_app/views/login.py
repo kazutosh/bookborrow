@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask import Blueprint
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy import select
 
 from ..db import db
@@ -10,28 +10,32 @@ module = Blueprint("login", __name__)
 
 @module.route("/login", methods=['GET'])
 def login_get():
-    return render_template("login.html")
+    return render_template("login.html", callback=request.args.get("callback"))
 
 @module.route("/signup", methods=["GET"])
 def signup_get():
-    return render_template("signup.html")
+    return render_template("signup.html", callback=request.args.get("callback"))
 
 @module.route("/login", methods=["POST"])
 def login_post():
     email = request.form.get("email")
     password = request.form.get("password")
+    callback = request.args.get("callback")
 
     user = db.session.scalar(select(User).where(User.email==email))
     if not user or not user.check_password(password):
         return redirect(url_for(".login_get"))
     
     login_user(user)
+    if callback:
+        return redirect(callback)
     return redirect(url_for("index.index_get"))
 
 @module.route("/signup", methods=["POST"])
 def signup_post():
     email = request.form.get("email")
     password = request.form.get("password")
+    callback = request.args.get("callback")
 
     # TODO: 存在するユーザの場合の処理
     existing_user = db.session.scalar(select(User).where(User.email==email))
@@ -44,6 +48,8 @@ def signup_post():
     db.session.commit()
     
     login_user(user)
+    if callback:
+        return redirect(callback)
     return redirect(url_for("index.index_get"))
 
 @module.route("/logout", methods=["GET"])
