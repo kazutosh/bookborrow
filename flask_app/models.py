@@ -1,6 +1,7 @@
 from typing import List
 from datetime import date
 
+import sqlalchemy.orm
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -23,6 +24,7 @@ class User(db.Model, UserMixin):
     name: Mapped[str] = mapped_column()
     email: Mapped[str] = mapped_column()
     password_hash: Mapped[str] = mapped_column()
+    is_admin: Mapped[bool] = mapped_column(default=False)
 
     borrows: Mapped[List["Borrow"]] = relationship(back_populates="user")
 
