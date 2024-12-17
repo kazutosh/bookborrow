@@ -71,3 +71,13 @@ def return_post(book_id: str):
     db.session.commit()
 
     return redirect(url_for(".borrows_get"))
+
+
+@module.route("/history", methods=['GET'])
+def history_get():
+    borrows = db.session.scalars(
+        select(Borrow)
+        .where(Borrow.user_id==current_user.id)
+        .options(joinedload(Borrow.book))
+    )
+    return render_template("history.html" ,borrows = borrows)
