@@ -1,4 +1,5 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from dataclasses import dataclass
 
 from flask import render_template, request, redirect, url_for, abort
 from flask import Blueprint
@@ -7,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 from ..db import db
-from ..models import Book, Borrow
+from ..models import Book, Borrow, User, AcceptWait
 
 module = Blueprint("borrow", __name__)
 
@@ -20,7 +21,10 @@ def borrow_get(book_id: str):
 
     return_exptected_at = date.today() + timedelta(days=7)
     current_borrow = db.session.scalar(select(Borrow).where(Borrow.book_id==book_id).where(Borrow.returned_at==None))
-    return render_template("borrow.html", book=book, current_borrow=current_borrow, return_exptected_at=return_exptected_at)
+    return render_template("borrow.html", 
+                           book=book,
+                           current_borrow=current_borrow, 
+                           return_exptected_at=return_exptected_at)
 
 @module.route("/borrows", methods=['GET'])
 @login_required
@@ -51,7 +55,15 @@ def borrow_post(book_id: str):
         return_expected_at=date.today() + timedelta(days=7),
         borrowed_at=date.today()
     )
+
+    accept_wait = AcceptWait(
+        borrow=borrow,
+        will_cancel_at=datetime.now() + timedelta(hours=1)
+    )
+    borrow.accept_wait = accept_wait
+
     db.session.add(borrow)
+    db.session.add(accept_wait)
     db.session.commit()
 
     return redirect(url_for(".borrows_get"))
@@ -71,6 +83,10 @@ def return_post(book_id: str):
     db.session.commit()
 
     return redirect(url_for(".borrows_get"))
+
+@module.route("/accept")
+def accept_get():
+    return render_template("accept.html")
 
 
 @module.route("/history", methods=['GET'])

@@ -1,5 +1,5 @@
 from typing import List
-from datetime import date
+from datetime import date, datetime
 
 import sqlalchemy.orm
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -41,9 +41,18 @@ class Borrow(db.Model):
     borrowed_at: Mapped[date] = mapped_column()
     returned_at: Mapped[date] = mapped_column(nullable=True)
     return_expected_at: Mapped[date] = mapped_column()
+    accept_wait_id: Mapped[int] = mapped_column(ForeignKey("accept_wait.id"), nullable=True)
 
     user: Mapped[User] = relationship(back_populates="borrows")
     book: Mapped[Book] = relationship(back_populates="borrows")
+    # accept_wait: Mapped["AcceptWait"] = relationship(back_populates="borrow")
+
+class AcceptWait(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    borrow_id: Mapped[int] = mapped_column(ForeignKey("borrow.id"))
+    will_cancel_at: Mapped[datetime] = mapped_column()
+
+    # borrow: Mapped[Borrow] = relationship(back_populates="accept_wait")
 
 # DBのテーブルを定義する
 # class Account(UserMixin, db.Model):

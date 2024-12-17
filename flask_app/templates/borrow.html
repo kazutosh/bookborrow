@@ -17,7 +17,6 @@
             </div>
             <div class="card-body">
                 <p class="lead"><strong>著者:</strong> {{ book.authors }}</p>
-                
                 {% if current_borrow == None %}
                     <p><strong>返却予定日:</strong> {{ return_exptected_at.strftime('%Y-%m-%d') }}</p>
                     <form action="{{ url_for('borrow.borrow_post', book_id=book.id) }}" method="post">
