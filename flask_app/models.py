@@ -45,14 +45,14 @@ class Borrow(db.Model):
 
     user: Mapped[User] = relationship(back_populates="borrows")
     book: Mapped[Book] = relationship(back_populates="borrows")
-    # accept_wait: Mapped["AcceptWait"] = relationship(back_populates="borrow")
+    accept_wait: Mapped["AcceptWait"] = relationship(back_populates="borrow", uselist=False)
 
 class AcceptWait(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    borrow_id: Mapped[int] = mapped_column(ForeignKey("borrow.id"))
     will_cancel_at: Mapped[datetime] = mapped_column()
+    is_accepted: Mapped[bool] = mapped_column(default=False)
 
-    # borrow: Mapped[Borrow] = relationship(back_populates="accept_wait")
+    borrow: Mapped[Borrow] = relationship(back_populates="accept_wait")
 
 # DBのテーブルを定義する
 # class Account(UserMixin, db.Model):

@@ -30,8 +30,12 @@
                             <td>{{ borrow.book.authors }}</td>
                             <td>{{ borrow.return_expected_at.strftime('%Y-%m-%d') }}</td>
                             <td>
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="location.href=`{{ url_for('borrow.borrow_get', book_id=borrow.book.id) }}`"
-                                >返却する</button>
+                                {% if borrow.accept_wait.is_accepted %}
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="location.href=`{{ url_for('borrow.borrow_get', book_id=borrow.book.id) }}`"
+                                    >返却する</button>
+                                {% else %}
+                                    承認待ちです
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

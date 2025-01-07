@@ -23,10 +23,18 @@
                         <button type="submit" class="btn btn-primary btn-lg btn-block">借りる</button>
                     </form>
                 {% elif current_borrow.user_id == current_user.id %}
-                    <p><strong>返却予定日:</strong> {{ current_borrow.return_expected_at.strftime('%Y-%m-%d') }}</p>
-                    <form action="{{ url_for('borrow.return_post', book_id=book.id) }}" method="post">
-                        <button type="submit" class="btn btn-danger btn-lg btn-block">返却する</button>
-                    </form>
+                    {% if current_borrow.accept_wait.is_accepted %}
+                        <p><strong>返却予定日:</strong> {{ current_borrow.return_expected_at.strftime('%Y-%m-%d') }}</p>
+                        <form action="{{ url_for('borrow.return_post', book_id=book.id) }}" method="post">
+                            <button type="submit" class="btn btn-danger btn-lg btn-block">返却する</button>
+                        </form>
+                    {% else %}
+                        <p><strong>返却予定日:</strong> {{ current_borrow.return_expected_at.strftime('%Y-%m-%d') }}</p>
+                        <form action="{{ url_for('borrow.return_post', book_id=book.id) }}" method="post">
+                            <button type="submit" class="btn btn-danger btn-lg btn-block disabled">返却する</button>
+                            <span>承認待ち</span>
+                        </form>
+                    {% endif %}
                 {% else %}
                     <p><strong>返却予定日:</strong> {{ current_borrow.return_expected_at.strftime('%Y-%m-%d') }}</p>
                     <div class="alert alert-warning" role="alert">
